@@ -1,0 +1,64 @@
+-- QUESTÃO 2 
+-- letra a
+SELECT essn AS ssn, nomedep, parentesco
+FROM Dependente
+ORDER BY essn ASC, parentesco DESC;
+
+-- letra b 
+SELECT E.pnome, E.unome, E.endereco
+FROM EMPREGADO E
+JOIN DEPARTAMENTO D ON E.dno = D.dnumero
+WHERE D.dnome = 'Pesquisa';
+
+-- letra c
+SELECT P.pjnome AS nome_projeto, D.dnome AS nome_departamento,
+  G.unome AS sobrenome_gerente, G.endereco, G.datanasc
+FROM PROJETO P
+JOIN DEPARTAMENTO D ON P.dnum = D.dnumero
+JOIN EMPREGADO G ON D.gerssn = G.ssn
+WHERE P.plocal = 'Araucaria';
+
+-- letra d
+SELECT E.pnome, E.unome
+FROM EMPREGADO E
+JOIN TRABALHA T ON E.ssn = T.essn
+JOIN PROJETO P ON T.pno = P.pnumero
+WHERE P.pjnome = 'Automatizacao' AND T.horas > 10;
+
+-- letra e
+SELECT pnome, unome, salario
+FROM EMPREGADO
+ORDER BY salario DESC
+LIMIT 3;
+
+-- letra f
+SELECT S.pnome, S.unome, S.salario * 1.2 AS salario_com_aumento
+FROM EMPREGADO S
+WHERE S.ssn IN (
+  SELECT DISTINCT E.superssn
+  FROM EMPREGADO E
+  WHERE E.superssn IS NOT NULL
+);
+-- Supervisores são referenciados no superssn de seus subordinados
+
+-- letra g
+SELECT D.dnome, L.dlocalizacao
+FROM DEPARTAMENTO D
+JOIN LOCALIZACAO L ON D.dnumero = L.dnum;
+
+-- letra h
+SELECT D.dnome, P.pjnome
+FROM DEPARTAMENTO D
+JOIN PROJETO P ON D.dnumero = P.dnum;
+
+-- letra i
+SELECT pnome, unome, datanasc, salario
+FROM EMPREGADO
+WHERE sexo = 'F' AND salario > 30000;
+
+-- letra j
+SELECT P.pjnome
+FROM EMPREGADO E
+JOIN TRABALHA T ON E.ssn = T.essn
+JOIN PROJETO P ON T.pno = P.pnumero
+WHERE E.pnome = 'Fabio';
