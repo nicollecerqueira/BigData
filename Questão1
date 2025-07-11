@@ -1,0 +1,75 @@
+-- QUESTÃO 1
+
+-- letra a
+INSERT INTO EMPREGADO 
+(ssn, pnome, inicialm, unome, sexo, endereco, datanasc, superssn, dno, salario)
+VALUES 
+('943775543', 'Roberto', 'F', 'Silva', 'M', 'Rua X, 22 – Araucária – PR', 
+ '1952-06-21', '888665555', 1, 58000);
+
+-- letra b
+/* Tenta inserir um projeto com pnumero = 4, que já existe
+   Isso viola a restrição de chave primária da tabela PROJETO
+   ERRO: duplicate key value violates unique constraint "projeto_pkey"
+*/
+INSERT INTO PROJETO (pnumero, pnome, plocal, dnum)
+VALUES (4, 'ProdutoA', 'Araucaria', 2);
+
+-- letra c
+/* Tenta inserir um departamento com dnumero = 4, que já existe
+   Isso também viola a restrição de chave primária da tabela DEPARTAMENTO
+   ERRO: duplicate key value violates unique constraint "departamento_pkey"
+*/
+INSERT INTO DEPARTAMENTO (dnumero, dnome, gerssn, gerdatainic)
+VALUES (4, 'Produção', '943775543', '1998-10-01');
+
+-- letra d
+/* Tenta inserir um registro na tabela TRABALHA com pno = NULL
+  A coluna pno faz parte da chave primária ou tem restrição NOT NULL
+  Por isso, inserir NULL gera erro
+  ERRO: null value in column "pno" violates not-null constraint
+  */
+INSERT INTO TRABALHA (essn, pno, horas)
+VALUES ('677678989', NULL, 40.0);
+
+-- letra e
+/*Tenta inserir um dependente com nome_dependente, que não existe na tabela
+-- O nome correto da coluna é "nome", não "nome_dependente"
+-- Isso gera erro de coluna inexistente
+ERRO: column "nome_dependente" does not exist
+*/
+INSERT INTO DEPENDENTE (essn, nomedep, sexodep, datanascdep, parentesco)
+VALUES ('453453453', 'Joao', 'M', '1970-12-12', 'CONJUGE');
+
+-- letra f
+DELETE FROM Trabalha
+WHERE essn = '333445555';
+
+-- letra g
+DELETE FROM Empregado
+WHERE ssn = '987654321';
+
+-- letra h
+/*  Supondo que tenta remover um empregado que é gerente de um departamento
+    Isso viola a integridade referencial, pois há um vínculo na FK gerssn
+    ERRO: update or delete on table "empregado" violates foreign key constraint 
+    "departamento_gerssn_fkey" on table "departamento"
+*/
+DELETE FROM Projeto
+WHERE pjnome = 'ProdutoX';
+
+-- letra i
+UPDATE Departamento
+SET gerssn = '123456789',
+    gerdatainicio = '1999-01-10'
+WHERE dnumero = '5';
+
+-- letra j
+UPDATE Empregado
+SET superssn = '943775543'
+WHERE ssn = '999887777';
+
+-- letra l
+UPDATE Trabalha
+SET horas = 5.0
+WHERE essn = '999887777' AND pno = '10';
