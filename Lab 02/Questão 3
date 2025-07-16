@@ -1,0 +1,32 @@
+-- QUESTÃO 3 
+--letra a)
+
+SELECT pnome, unome
+FROM Empregado e
+WHERE EXISTS (
+    SELECT 1
+    FROM Dependente d
+    WHERE d.essn = e.ssn
+      AND d.nomedep = e.pnome
+      AND d.sexodep = e.sexo
+);
+
+--letra b)
+
+SELECT pnome, unome
+FROM Empregado
+WHERE salario > (
+    SELECT AVG(salario)
+    FROM Empregado
+    WHERE dno = '5'
+);
+
+--letra c)
+
+SELECT DISTINCT essn
+FROM Trabalha t1
+WHERE (t1.pno, t1.horas) IN (
+    SELECT t2.pno, t2.horas
+    FROM Trabalha t2
+    WHERE t2.essn = '333445555'
+);
