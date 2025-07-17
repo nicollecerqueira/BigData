@@ -1,0 +1,99 @@
+--QUESTÃO 4 
+--letra a)
+
+CREATE VIEW TRABALHA_EM AS
+SELECT 
+    e.pnome,
+    e.unome,
+    p.pjnome,
+    t.horas
+FROM Empregado e
+JOIN Trabalha t ON e.ssn = t.essn
+JOIN Projeto p ON t.pno = p.pnumero;
+
+--letra b)
+-- consulta na visao
+
+SELECT pnome, unome
+FROM TRABALHA_EM
+WHERE pjnome = 'ProdutoX';
+
+-- comando de alteracao na tabela 
+
+UPDATE Empregado
+SET pnome = 'Fabiano', unome = 'Willian'
+WHERE ssn = '123456789';
+
+--letra c)
+
+DROP VIEW TRABALHA_EM;
+
+--letra d)
+
+CREATE MATERIALIZED VIEW DEPTO_INFO AS
+SELECT 
+    d.dnome,
+    COUNT(e.ssn) AS total_empregados,
+    SUM(e.salario) AS soma_salarios
+FROM Departamento d
+JOIN Empregado e ON d.dnumero = e.dno
+GROUP BY d.dnome;
+
+--letra e)
+
+-- Consulta a visão materializada DEPTO_INFO
+
+SELECT *
+FROM DEPTO_INFO
+ORDER BY soma_salarios DESC;
+
+-- Alteração no salário de um empregado 
+UPDATE Empregado
+SET salario = 80000
+WHERE ssn = '123456789';
+
+-- Atualização da visão materializada
+-- Reflete a mudança feita na tabela Empregado dentro da visão DEPTO_INFO
+REFRESH MATERIALIZED VIEW DEPTO_INFO;
+
+
+--letra f)
+
+-- Visão TRABALHA_EM permite operações diretas (INSERT, UPDATE, DELETE)
+
+-- Exemplo de UPDATE em TRABALHA_EM (atualiza horas)
+UPDATE TRABALHA_EM
+SET horas = 35
+WHERE pnome = 'João' AND pjnome = 'ProdutoX';
+
+-- Exemplo de DELETE em TRABALHA_EM (remove registro)
+DELETE FROM TRABALHA_EM
+WHERE pnome = 'Maria' AND pjnome = 'ProdutoY';
+
+-- Exemplo de INSERT em TRABALHA_EM (pode não funcionar dependendo da configuração da view)
+INSERT INTO TRABALHA_EM (pnome, unome, pjnome, horas)
+VALUES ('Carlos', 'Silva', 'ProdutoZ', 20);
+
+
+-- Visão DEPTO_INFO é uma view materializada com agregações (não permite modificações diretas)
+
+-- Tentativa de UPDATE em DEPTO_INFO (gera erro)
+UPDATE DEPTO_INFO
+SET soma_salarios = 200000
+WHERE dnome = 'Pesquisa';
+
+-- Tentativa de DELETE em DEPTO_INFO (gera erro)
+DELETE FROM DEPTO_INFO
+WHERE dnome = 'Administração';
+
+-- Tentativa de INSERT em DEPTO_INFO (gera erro)
+INSERT INTO DEPTO_INFO (dnome, total_empregados, soma_salarios)
+VALUES ('TI', 5, 100000);
+
+-- Para refletir alterações nas tabelas base, a DEPTO_INFO deve ser atualizada com:
+REFRESH MATERIALIZED VIEW DEPTO_INFO;
+
+--letra g)
+
+DROP VIEW IF EXISTS TRABALHA_EM;
+DROP MATERIALIZED VIEW IF EXISTS DEPTO_INFO;
