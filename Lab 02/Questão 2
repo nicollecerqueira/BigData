@@ -2,7 +2,7 @@
 
 --letra a)
 
-sELECT AVG(salario) AS media_salarial_feminino
+SELECT AVG(salario) AS media_salarial_feminino
 FROM Empregado
 WHERE sexo = 'F';
 
