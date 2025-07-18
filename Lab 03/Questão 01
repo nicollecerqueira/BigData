@@ -1,0 +1,61 @@
+--LETRA A)
+/* índice B-Tree 
+    porque estamos filtrando por um valor exato de "cre"
+    e esse tipo de índice é ótimo pra esse tipo de comparação
+    (igualdade, maior, menor, etc.)
+*/
+CREATE INDEX idx_aluno_cre ON aluno(cre);
+
+--LETRA B)
+/*  índice B-Tree 
+     porque estamos usando uma comparação com menor que (<)
+    e esse tipo de índice é ótimo pra buscas por faixas de valores numéricos
+*/
+CREATE INDEX idx_aluno_idade ON aluno(idade);
+
+--LETRA C)
+/*  Índice B-Tree composto entre idade e cre
+    Ideal pra esse tipo de consulta com dois filtros numéricos
+    Ele permite que o PostgreSQL use os dois ao mesmo tempo na busca
+*/
+CREATE INDEX idx_aluno_idade_cre ON aluno(idade, cre);
+
+--LETRA D)
+
+/* Aqui não vale muito a pena criar índice
+    A função AVG precisa olhar todos os valores da coluna mesmo
+    então o índice não ajuda a evitar leitura de dados
+*/
+
+--LETRA E)
+
+/*  índice B-Tree em "curso"
+    porque estamos filtrando por curso antes de agrupar
+    Isso faz o banco achar mais rápido só os alunos de "Computação"
+*/
+
+CREATE INDEX idx_aluno_curso ON aluno(curso);
+
+-- LETRA F)
+/*  Índice GIN sobre a coluna disciplinas (tipo JSONB)
+    Ideal para acelerar buscas com o operador @> (contém) em dados JSONB
+    Esse tipo de índice é necessário quando queremos filtrar por conteúdo específico dentro do campo JSONB
+*/
+CREATE INDEX idx_aluno_disciplinas_gin ON aluno USING GIN (disciplinas);
+
+
+--LETRA G)
+
+/*  Consulta que retorna todos os alunos que ingressaram no ano de 2024
+    Usa o operador BETWEEN para filtrar um intervalo de datas
+    Ideal para análises por período, como relatórios anuais de ingresso
+*/
+SELECT * FROM aluno 
+WHERE data_ingresso BETWEEN '2024-01-01' AND '2024-12-31';
+
+-- LETRA H)
+/*  Índice espacial GiST sobre a coluna localizacao
+    Necessário para acelerar buscas geográficas com ST_DWithin
+    Sem esse índice, o PostgreSQL faz varredura completa na tabela
+*/
+CREATE INDEX idx_aluno_localizacao_gist ON aluno USING GIST (localizacao);
