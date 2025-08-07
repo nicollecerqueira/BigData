@@ -1,0 +1,5 @@
+Questão 19:
+- Não há um campo de filmes favoritos em "users"
+
+- A consulta seria algo como:
+    db.users.find({ favorites: ObjectId("id_do_filme") })
