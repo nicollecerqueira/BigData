@@ -1,0 +1,28 @@
+Questão 25:
+
+- Não temos campo de nota de avaliação na coleção de comments
+
+- A consulta seria algo como:
+    db.comments.aggregate([
+        {
+            $match: {
+            rating: { $exists: true, $ne: null }
+            }
+        },
+        {
+            $group: {
+            _id: "$email",
+            total: { $sum: 1 },
+            media: { $avg: "$rating" }
+            }
+        },
+        {
+            $match: {
+            total: { $gt: 10 },
+            media: { $gt: 7.5 }
+            }
+        },
+        {
+            $sort: { media: -1 }
+        }
+        ])
